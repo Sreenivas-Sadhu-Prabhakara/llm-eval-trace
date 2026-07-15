@@ -1,0 +1,163 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../site.config.mjs';
+
+// ── Content the subagent fills in per product ──────────────────
+const features = [
+  {
+    title: 'Full call tracing',
+    body: 'Capture every LLM request and response — prompt, parameters, completion, and metadata — with structured logging you can search and replay.',
+  },
+  {
+    title: 'Multi-step agent timelines',
+    body: 'Follow tool calls, retries, and nested chains across a single agent run in one waterfall view, so you can pinpoint exactly where a run went wrong.',
+  },
+  {
+    title: 'Regression eval suites',
+    body: 'Run automated evals on every prompt change and block deploys that drop accuracy — catch quality regressions before your users do.',
+  },
+  {
+    title: 'Side-by-side prompt diffing',
+    body: 'Compare two prompt versions on the same inputs and see outputs, scores, and token deltas side by side before you promote a change.',
+  },
+  {
+    title: 'Latency & token metrics',
+    body: 'Track p50/p95 latency, token usage, and cost per model, route, and endpoint to spot slow calls and runaway spend early.',
+  },
+  {
+    title: 'Quality-drop alerts',
+    body: 'Get notified the moment eval scores, error rates, or latency cross your thresholds — no more silent quality drops in production.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'What is ' + site.name + '?',
+    a: 'LLM Eval & Trace is an observability and evaluation tool for AI apps. It logs every model call, traces multi-step agents end to end, and runs regression evals when you change a prompt, giving developers full visibility into LLM behavior in production.',
+  },
+  {
+    q: 'Which model providers does it support?',
+    a: 'It works with Claude (Anthropic), OpenAI, and any HTTP-based LLM. Point your calls through the SDK or proxy and traces, metrics, and evals flow in automatically — regardless of provider.',
+  },
+  {
+    q: 'How do regression evals work?',
+    a: 'Define a suite of test inputs with expected criteria or graders. Every time you change a prompt or model, LLM Eval & Trace re-runs the suite, scores the outputs, and diffs them against your baseline so a regression fails the check instead of shipping silently.',
+  },
+  {
+    q: 'Is there a free tier?',
+    a: 'Yes. You can start tracing and running evals for free — no credit card required. Paid plans add higher volume, longer retention, and team features as you scale.',
+  },
+];
+
+// FAQ structured data for rich results
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout>
+  <script
+    slot="header"
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(faqJsonLd)}
+  />
+  <Header slot="header" />
+
+  <!-- Hero -->
+  <section class="mx-auto max-w-4xl px-6 pb-16 pt-20 text-center">
+    <p class="mb-4 inline-block rounded-full bg-brand-50 px-4 py-1 text-sm font-semibold text-brand-700">
+      {site.organization}
+    </p>
+    <h1 class="text-balance text-5xl font-extrabold tracking-tight sm:text-6xl">
+      {site.tagline}
+    </h1>
+    <p class="mx-auto mt-6 max-w-2xl text-lg text-[var(--muted)]">
+      {site.description}
+    </p>
+    <div class="mt-10 flex justify-center gap-4">
+      <a
+        href="#cta"
+        class="rounded-xl bg-brand-600 px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
+        >Start tracing free</a
+      >
+      <a
+        href="#features"
+        class="rounded-xl border border-[var(--border)] px-7 py-3.5 text-base font-semibold transition hover:bg-[var(--card)]"
+        >See how it works</a
+      >
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="mx-auto max-w-6xl px-6 py-16">
+    <h2 class="text-center text-3xl font-bold tracking-tight">Observability and evals built for LLM apps</h2>
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        features.map((f) => (
+          <div class="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+            <h3 class="text-lg font-semibold">{f.title}</h3>
+            <p class="mt-2 text-[var(--muted)]">{f.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="mx-auto max-w-3xl px-6 py-16">
+    <h2 class="text-center text-3xl font-bold tracking-tight">Frequently asked questions</h2>
+    <div class="mt-10 divide-y divide-[var(--border)]">
+      {
+        faqs.map((f) => (
+          <details class="group py-5">
+            <summary class="cursor-pointer list-none text-lg font-semibold">
+              {f.q}
+            </summary>
+            <p class="mt-3 text-[var(--muted)]">{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- CTA / waitlist -->
+  <section id="cta" class="mx-auto max-w-3xl px-6 py-20 text-center">
+    <div class="rounded-3xl border border-[var(--border)] bg-brand-600 px-8 py-14 text-white">
+      <h2 class="text-3xl font-bold">Start tracing free</h2>
+      <p class="mx-auto mt-3 max-w-md text-brand-100">
+        Instrument your first LLM call in minutes. Free to start — no credit card required.
+      </p>
+      <!-- Replace action with a real backend/waitlist endpoint per product -->
+      <form
+        class="mx-auto mt-8 flex max-w-md gap-3"
+        action="#"
+        method="post"
+        data-waitlist
+      >
+        <input
+          type="email"
+          name="email"
+          required
+          placeholder="you@work.com"
+          class="w-full rounded-lg px-4 py-3 text-[var(--fg)]"
+        />
+        <button
+          type="submit"
+          class="whitespace-nowrap rounded-lg bg-white px-6 py-3 font-semibold text-brand-700 transition hover:bg-brand-50"
+          >Join</button
+        >
+      </form>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
